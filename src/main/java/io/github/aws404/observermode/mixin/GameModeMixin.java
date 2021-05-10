@@ -19,8 +19,8 @@ public class GameModeMixin {
     @Inject(method = "setAbilities", at = @At("HEAD"), cancellable = true)
     private void setAbilities(PlayerAbilities abilities, CallbackInfo ci) {
         if (this.isObserver()) {
-            abilities.allowFlying = ObserverModeConfig.MainConfig.canFly.getValue();
-            abilities.flying = ObserverModeConfig.MainConfig.canFly.getValue();
+            abilities.allowFlying = ObserverModeMod.CONFIG.get().canFly;
+            abilities.flying = ObserverModeMod.CONFIG.get().canFly;
             abilities.creativeMode = false;
             abilities.invulnerable = true;
             abilities.allowModifyWorld = false;

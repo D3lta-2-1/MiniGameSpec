@@ -104,9 +104,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
     private void attack(Entity target, CallbackInfo ci) {
         if (interactionManager.getGameMode() == ObserverModeMod.OBSERVER_MODE) {
-            if (ObserverModeConfig.MainConfig.canSpectatePlayers.getValue() && target instanceof ServerPlayerEntity) {
+            if (ObserverModeMod.CONFIG.get().canSpectatePlayers && target instanceof ServerPlayerEntity) {
                 this.setCameraEntity(target);
-            } else if (ObserverModeConfig.MainConfig.canSpectateMobs.getValue()) {
+            } else if (ObserverModeMod.CONFIG.get().canSpectateMobs) {
                 this.setCameraEntity(target);
             }
             ci.cancel();
