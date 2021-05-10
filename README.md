@@ -11,3 +11,8 @@ Adds an new server-sided gamemode to Minecraft Fabric servers. Observer mode is 
 `allow_fly` - If players in Observer mode should be able to fly (`true`/`false`)
 `can_spectate_mobs` - If players in Observer mode should be able to specate non-player entities (`true`/`false`)
 `can_spectate_players` - If players in Observer mode should be able to specate other non-specator/observer players (`true`/`false`)
+
+## Libraries
+Observer mode takes advantage of the following included libraries
+* [Oro-Config](https://github.com/OroArmor/Oro-Config)
+* [Fabric-ASM](https://github.com/Chocohead/Fabric-ASM)
