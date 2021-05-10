@@ -1,37 +1,36 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "${modId}",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Observer Mode",
+  "description": "Adds an addition server-sided gamemode to Minecraft Fabric servers",
   "authors": [
-    "Me!"
+    "aws404"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "",
+    "sources": "https://github.com/aws404/Fabric-ObserverMode"
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/${modId}/icon.png",
 
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
+    "server": [
+      "io.github.aws404.observermode.ObserverModeMod"
+    ],
+    "mm:early_risers": [
+      "io.github.aws404.observermode.GameModeEnumAdder"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "observermode.mixins.json"
   ],
 
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": "*",
     "minecraft": "1.16.x"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }

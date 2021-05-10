@@ -1,8 +1,8 @@
-# Fabric Example Mod
+# Fabric Observer Gamemode
+Adds a new server-sided gamemode which is a hybrid between spectator and adventure mode.
 
 ## Setup
-
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+TODO
 
 ## License
 
