@@ -22,10 +22,11 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
+	modImplementation"com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
+	include "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
 
 	modImplementation "com.oroarmor:oro-config-fabric:${project.oro_config_verison}"
-	modApi "com.oroarmor:oro-config-fabric:${project.oro_config_verison}"
+	include "com.oroarmor:oro-config-fabric:${project.oro_config_verison}"
 }
 
 processResources {
