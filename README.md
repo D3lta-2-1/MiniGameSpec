@@ -3,7 +3,7 @@ Adds an new server-sided gamemode to Minecraft Fabric servers. Observer mode is 
 
 ## Setup
 1. Install the mods dependencies:
-  * Fabric API
+    * Fabric API
 2. Install this mod using a jar from the versions page.
 3. Start your server and configure using the `/observermode` command or directly to the `config/observermode.json` file.
 
