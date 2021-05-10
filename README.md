@@ -1,9 +1,13 @@
 # Fabric Observer Gamemode
-Adds a new server-sided gamemode which is a hybrid between spectator and adventure mode.
+Adds an new server-sided gamemode to Minecraft Fabric servers. Observer mode is a customisable hybrid between Spectator and Adventure mode.
 
 ## Setup
-TODO
+1. Install the mods dependencies:
+  * Fabric API
+2. Install this mod using a jar from the versions page.
+3. Start your server and configure using the `/observermode` command or directly to the `config/observermode.json` file.
 
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+## Config
+`allow_fly` - If players in Observer mode should be able to fly (`true`/`false`)
+`can_spectate_mobs` - If players in Observer mode should be able to specate non-player entities (`true`/`false`)
+`can_spectate_players` - If players in Observer mode should be able to specate other non-specator/observer players (`true`/`false`)
