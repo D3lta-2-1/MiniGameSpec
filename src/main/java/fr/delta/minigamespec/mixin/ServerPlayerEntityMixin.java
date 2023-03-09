@@ -123,14 +123,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     private void attack(Entity target, CallbackInfo ci) {
         var gameSpace = GameSpaceManager.get().byWorld(world);
         if(gameSpace == null) return;
-        if (gameSpace.getBehavior().testRule(MiniGameSpec.OBSERVER_CAN_HIT) == ActionResult.SUCCESS && interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE) {
-            return;
+        if (gameSpace.getBehavior().testRule(MiniGameSpec.OBSERVER_CAN_HIT) == ActionResult.FAIL && interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE) {
+            ci.cancel();
         }
-        else if (gameSpace.getBehavior().testRule(MiniGameSpec.ADVENTURE_SPEC_CAN_HIT) == ActionResult.SUCCESS && interactionManager.getGameMode() == MiniGameSpec.ADVENTURE_SPEC_MODE) {
-            return;
+        else if (gameSpace.getBehavior().testRule(MiniGameSpec.ADVENTURE_SPEC_CAN_HIT) == ActionResult.FAIL && interactionManager.getGameMode() == MiniGameSpec.ADVENTURE_SPEC_MODE) {
+            ci.cancel();
         }
-        ci.cancel();
-
     }
 
     /**
