@@ -17,7 +17,7 @@ public class GameModeMixin {
      */
     @Inject(method = "setAbilities", at = @At("HEAD"), cancellable = true)
     private void setAbilities(PlayerAbilities abilities, CallbackInfo ci) {
-        if (this.asGameMode() == MiniGameSpec.OBSERVER_MODE || this.asGameMode() == MiniGameSpec.ADVENTURE_SPEC_MOD) {
+        if (this.asGameMode() == MiniGameSpec.OBSERVER_MODE || this.asGameMode() == MiniGameSpec.ADVENTURE_SPEC_MODE) {
             abilities.allowFlying = true;
             abilities.flying = true;
             abilities.creativeMode = false;
@@ -32,7 +32,7 @@ public class GameModeMixin {
      */
     @Inject(method = "isBlockBreakingRestricted", at = @At("HEAD"), cancellable = true)
     private void isBlockBreadingRestricted(CallbackInfoReturnable<Boolean> cir) {
-        if (this.asGameMode() == MiniGameSpec.OBSERVER_MODE || this.asGameMode() == MiniGameSpec.ADVENTURE_SPEC_MOD) {
+        if (this.asGameMode() == MiniGameSpec.OBSERVER_MODE || this.asGameMode() == MiniGameSpec.ADVENTURE_SPEC_MODE) {
             cir.setReturnValue(true);
         }
     }

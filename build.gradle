@@ -9,6 +9,7 @@ group = project.maven_group
 
 repositories {
 	maven { url 'https://jitpack.io/' }
+	maven { url = 'https://maven.nucleoid.xyz/' }
 }
 
 dependencies {
@@ -17,6 +18,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modImplementation "xyz.nucleoid:plasmid:${project.plasmid_version}"
 
 	modImplementation"com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
 	include "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"

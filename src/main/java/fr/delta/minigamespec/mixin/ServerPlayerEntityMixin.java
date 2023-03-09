@@ -15,6 +15,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
@@ -28,12 +29,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import xyz.nucleoid.plasmid.game.manager.GameSpaceManager;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
-    @Shadow @Final public ServerPlayerInteractionManager interactionManager;
-    @Shadow public ServerPlayNetworkHandler networkHandler;
+    @Shadow @Final
+    public ServerPlayerInteractionManager interactionManager;
+    @Shadow
+    public ServerPlayNetworkHandler networkHandler;
+
+    @Shadow public abstract World getWorld();
 
     public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) { super(world, pos, yaw, profile); }
 
@@ -56,7 +62,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
             cir.setReturnValue(true);
         }
-        if (gameMode == MiniGameSpec.ADVENTURE_SPEC_MOD) {
+        if (gameMode == MiniGameSpec.ADVENTURE_SPEC_MODE) {
             this.interactionManager.changeGameMode(gameMode);
 
             this.networkHandler.sendPacket(new GameStateChangeS2CPacket(GameStateChangeS2CPacket.GAME_MODE_CHANGED, (float)GameMode.ADVENTURE.getId()));
@@ -85,7 +91,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
      */
     @Inject(method = "getPlayerListName", at = @At("HEAD"), cancellable = true)
     private void getPlayerListName(CallbackInfoReturnable<Text> cir) {
-        if (interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE || interactionManager.getGameMode() == MiniGameSpec.ADVENTURE_SPEC_MOD) {
+        if (interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE || interactionManager.getGameMode() == MiniGameSpec.ADVENTURE_SPEC_MODE) {
             cir.setReturnValue(((MutableText) getName()).formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
         }
     }
@@ -107,7 +113,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Redirect(method = "isSpectator", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerInteractionManager;getGameMode()Lnet/minecraft/world/GameMode;"))
     private GameMode isSpectatorGameModeRedirect(ServerPlayerInteractionManager manager) {
         var gameMode = manager.getGameMode();
-        return gameMode == MiniGameSpec.OBSERVER_MODE || gameMode == MiniGameSpec.ADVENTURE_SPEC_MOD ? GameMode.SPECTATOR : gameMode;
+        return gameMode == MiniGameSpec.OBSERVER_MODE || gameMode == MiniGameSpec.ADVENTURE_SPEC_MODE ? GameMode.SPECTATOR : gameMode;
     }
 
     /**
@@ -115,9 +121,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
      */
     @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
     private void attack(Entity target, CallbackInfo ci) {
-        if (interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE) {
-            ci.cancel();
+        var gameSpace = GameSpaceManager.get().byWorld(world);
+        if(gameSpace == null) return;
+        if (gameSpace.getBehavior().testRule(MiniGameSpec.OBSERVER_CAN_HIT) == ActionResult.SUCCESS && interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE) {
+            return;
         }
+        else if (gameSpace.getBehavior().testRule(MiniGameSpec.ADVENTURE_SPEC_CAN_HIT) == ActionResult.SUCCESS && interactionManager.getGameMode() == MiniGameSpec.ADVENTURE_SPEC_MODE) {
+            return;
+        }
+        ci.cancel();
+
     }
 
     /**
@@ -125,7 +138,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
      */
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
     private void trySleep(BlockPos pos, CallbackInfoReturnable<Either<SleepFailureReason, Unit>> cir) {
-        if (interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE) {
+        if (interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE && interactionManager.getGameMode() == MiniGameSpec.ADVENTURE_SPEC_MODE) {
             cir.setReturnValue(Either.left(SleepFailureReason.OTHER_PROBLEM));
         }
     }

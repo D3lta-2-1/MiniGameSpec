@@ -17,7 +17,7 @@ public class PlayerListS2CPacketEntryMixin {
 	private static GameMode modifyGameMode(GameMode gameMode) {
 		if(gameMode == MiniGameSpec.OBSERVER_MODE)
 			return GameMode.ADVENTURE; //client hack to create the "observer mod"
-		if(gameMode == MiniGameSpec.ADVENTURE_SPEC_MOD)
+		if(gameMode == MiniGameSpec.ADVENTURE_SPEC_MODE)
 			return GameMode.ADVENTURE;
 		return gameMode;
 	}

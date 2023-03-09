@@ -19,7 +19,7 @@ public class GameStateChangeS2CPacketMixin {
         if (reason == GameStateChangeS2CPacket.GAME_MODE_CHANGED) {
             if (value == MiniGameSpec.OBSERVER_MODE.getId())
                 return GameMode.SPECTATOR.getId();
-            if (value == MiniGameSpec.ADVENTURE_SPEC_MOD.getId())
+            if (value == MiniGameSpec.ADVENTURE_SPEC_MODE.getId())
                 return GameMode.ADVENTURE.getId();
         }
         return value;

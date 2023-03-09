@@ -17,7 +17,7 @@ public class PlayerRespawnS2CPacketMixin {
     private static GameMode modifyGameMode(GameMode gameMode) {
         if(gameMode == MiniGameSpec.OBSERVER_MODE)
             return GameMode.SPECTATOR;
-        if(gameMode == MiniGameSpec.ADVENTURE_SPEC_MOD)
+        if(gameMode == MiniGameSpec.ADVENTURE_SPEC_MODE)
             return GameMode.ADVENTURE;
         return gameMode;
     }
