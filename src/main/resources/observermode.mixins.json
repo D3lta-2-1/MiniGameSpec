@@ -6,7 +6,7 @@
   "server": [
     "GameModeMixin",
     "GameStateChangeS2CPacketMixin",
-    "PlayerListS2CPacketMixin",
+    "PlayerListS2CPacketEntryMixin",
     "ServerPlayerEntityMixin",
     "GameJoinS2CPacketMixin",
     "PlayerRespawnS2CPacketMixin"

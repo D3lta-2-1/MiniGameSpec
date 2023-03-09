@@ -2,7 +2,6 @@ package io.github.aws404.observermode.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Either;
-import io.github.aws404.observermode.ObserverModeConfig;
 import io.github.aws404.observermode.ObserverModeMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
@@ -43,10 +42,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     /**
      * @reason Provides the logic for setting the player into observer mode
      */
-    @Inject(method = "setGameMode", at = @At("HEAD"), cancellable = true)
-    private void setGameModeHead(GameMode gameMode, CallbackInfo ci) {
+    @Inject(method = "changeGameMode", at = @At("HEAD"), cancellable = true)
+    private void setGameModeHead(GameMode gameMode, CallbackInfoReturnable<Boolean> cir) {
         if (gameMode == ObserverModeMod.OBSERVER_MODE) {
-            this.interactionManager.setGameMode(gameMode);
+            this.interactionManager.changeGameMode(gameMode);
 
             this.networkHandler.sendPacket(new GameStateChangeS2CPacket(GameStateChangeS2CPacket.GAME_MODE_CHANGED, (float)GameMode.SPECTATOR.getId()));
             this.networkHandler.sendPacket(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, (ServerPlayerEntity) (Object) this));
@@ -57,15 +56,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             this.sendAbilitiesUpdate();
             this.markEffectsDirty();
 
-            ci.cancel();
+            cir.setReturnValue(true);
         }
     }
 
     /**
      * @reason Forces the player list name to update after the gamemode has been changed
      */
-    @Inject(method = "setGameMode", at = @At("TAIL"))
-    private void setGameModeTail(GameMode gameMode, CallbackInfo ci) {
+    @Inject(method = "changeGameMode", at = @At("TAIL"))
+    private void setGameModeTail(GameMode gameMode, CallbackInfoReturnable<Boolean> cir) {
         this.networkHandler.sendPacket(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, (ServerPlayerEntity) (Object) this));
     }
 
@@ -86,7 +85,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
      * * {@link ServerPlayNetworkHandler#onClickSlot(ClickSlotC2SPacket)}
      * * {@link ServerPlayNetworkHandler#onCraftRequest(CraftRequestC2SPacket)}
      * * {@link ServerPlayNetworkHandler#onButtonClick(ButtonClickC2SPacket)}
-     * * {@link ServerPlayNetworkHandler#onConfirmScreenAction(ConfirmScreenActionC2SPacket)}
+     * * @link ServerPlayNetworkHandler#onConfirmScreenAction(ConfirmScreenActionC2SPacket)}
      * * {@link ServerPlayerEntity#playerTick()}
      * * {@link ServerPlayerEntity#onDeath(DamageSource)}
      * * {@link ServerPlayerEntity#canBeSpectated(ServerPlayerEntity)}
@@ -104,9 +103,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
     private void attack(Entity target, CallbackInfo ci) {
         if (interactionManager.getGameMode() == ObserverModeMod.OBSERVER_MODE) {
-            if (ObserverModeMod.CONFIG.get().canSpectatePlayers && target instanceof ServerPlayerEntity) {
-                this.setCameraEntity(target);
-            } else if (ObserverModeMod.CONFIG.get().canSpectateMobs) {
+            if (target instanceof ServerPlayerEntity) {
                 this.setCameraEntity(target);
             }
             ci.cancel();

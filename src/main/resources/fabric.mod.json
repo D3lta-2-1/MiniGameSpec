@@ -1,20 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "${modId}",
+  "id": "observermode",
   "version": "${version}",
 
   "name": "Observer Mode",
   "description": "Adds an addition server-sided gamemode to Minecraft Fabric servers",
   "authors": [
-    "aws404"
+    "aws404, Delta-2-1"
   ],
-  "contact": {
-    "homepage": "",
-    "sources": "https://github.com/aws404/Fabric-ObserverMode"
-  },
 
   "license": "CC0-1.0",
-  "icon": "assets/${modId}/icon.png",
+  "icon": "assets/observermode/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -30,7 +26,7 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.7.4",
-    "minecraft": "1.16.x"
+    "fabricloader": ">=0.14.17",
+    "minecraft": "1.19.3"
   }
 }

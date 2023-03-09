@@ -1,6 +1,5 @@
 package io.github.aws404.observermode.mixin;
 
-import io.github.aws404.observermode.ObserverModeConfig;
 import io.github.aws404.observermode.ObserverModeMod;
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.world.GameMode;
@@ -19,8 +18,8 @@ public class GameModeMixin {
     @Inject(method = "setAbilities", at = @At("HEAD"), cancellable = true)
     private void setAbilities(PlayerAbilities abilities, CallbackInfo ci) {
         if (this.isObserver()) {
-            abilities.allowFlying = ObserverModeMod.CONFIG.get().canFly;
-            abilities.flying = ObserverModeMod.CONFIG.get().canFly;
+            abilities.allowFlying = true;
+            abilities.flying = true;
             abilities.creativeMode = false;
             abilities.invulnerable = true;
             abilities.allowModifyWorld = false;
@@ -39,6 +38,6 @@ public class GameModeMixin {
     }
 
     private boolean isObserver() {
-        return ((GameMode) (Object) this) == ObserverModeMod.OBSERVER_MODE;
+        return ((Object) this) == ObserverModeMod.OBSERVER_MODE;
     }
 }

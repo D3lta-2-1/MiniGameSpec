@@ -11,6 +11,6 @@ public class GameModeEnumAdder implements Runnable {
     @Override
     public void run() {
         String gameMode = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_1934");
-        ClassTinkerers.enumBuilder(gameMode, int.class, String.class).addEnum("OBSERVER", 17, "observer").build();
+        ClassTinkerers.enumBuilder(gameMode, int.class, String.class).addEnum("OBSERVER", 4, "observer").build();
     }
 }
