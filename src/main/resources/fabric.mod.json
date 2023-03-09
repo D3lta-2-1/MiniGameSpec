@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "observermode",
+  "id": "mini_game_spec",
   "version": "${version}",
 
   "name": "Observer Mode",
@@ -15,10 +15,10 @@
   "environment": "*",
   "entrypoints": {
     "server": [
-      "io.github.aws404.observermode.ObserverModeMod"
+      "fr.delta.minigamespec.MiniGameSpec"
     ],
     "mm:early_risers": [
-      "io.github.aws404.observermode.GameModeEnumAdder"
+      "fr.delta.minigamespec.GameModeEnumAdder"
     ]
   },
   "mixins": [

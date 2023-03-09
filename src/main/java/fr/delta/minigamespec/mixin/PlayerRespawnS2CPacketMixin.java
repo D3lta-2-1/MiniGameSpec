@@ -1,6 +1,6 @@
-package io.github.aws404.observermode.mixin;
+package fr.delta.minigamespec.mixin;
 
-import io.github.aws404.observermode.ObserverModeMod;
+import fr.delta.minigamespec.MiniGameSpec;
 import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +15,11 @@ public class PlayerRespawnS2CPacketMixin {
      */
     @ModifyVariable(method = "<init>(Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/registry/RegistryKey;JLnet/minecraft/world/GameMode;Lnet/minecraft/world/GameMode;ZZBLjava/util/Optional;)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private static GameMode modifyGameMode(GameMode gameMode) {
-        return gameMode == ObserverModeMod.OBSERVER_MODE ? GameMode.SPECTATOR : gameMode;
+        if(gameMode == MiniGameSpec.OBSERVER_MODE)
+            return GameMode.SPECTATOR;
+        if(gameMode == MiniGameSpec.ADVENTURE_SPEC_MOD)
+            return GameMode.ADVENTURE;
+        return gameMode;
     }
 
 }

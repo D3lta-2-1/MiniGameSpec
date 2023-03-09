@@ -1,6 +1,6 @@
-package io.github.aws404.observermode.mixin;
+package fr.delta.minigamespec.mixin;
 
-import io.github.aws404.observermode.ObserverModeMod;
+import fr.delta.minigamespec.MiniGameSpec;
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +17,7 @@ public class GameModeMixin {
      */
     @Inject(method = "setAbilities", at = @At("HEAD"), cancellable = true)
     private void setAbilities(PlayerAbilities abilities, CallbackInfo ci) {
-        if (this.isObserver()) {
+        if (this.asGameMode() == MiniGameSpec.OBSERVER_MODE || this.asGameMode() == MiniGameSpec.ADVENTURE_SPEC_MOD) {
             abilities.allowFlying = true;
             abilities.flying = true;
             abilities.creativeMode = false;
@@ -32,12 +32,12 @@ public class GameModeMixin {
      */
     @Inject(method = "isBlockBreakingRestricted", at = @At("HEAD"), cancellable = true)
     private void isBlockBreadingRestricted(CallbackInfoReturnable<Boolean> cir) {
-        if (this.isObserver()) {
+        if (this.asGameMode() == MiniGameSpec.OBSERVER_MODE || this.asGameMode() == MiniGameSpec.ADVENTURE_SPEC_MOD) {
             cir.setReturnValue(true);
         }
     }
 
-    private boolean isObserver() {
-        return ((Object) this) == ObserverModeMod.OBSERVER_MODE;
+    private GameMode asGameMode() {
+        return (GameMode)(Object)this;
     }
 }

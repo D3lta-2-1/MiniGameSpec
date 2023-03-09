@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "io.github.aws404.observermode.mixin",
+  "package": "fr.delta.minigamespec.mixin",
   "compatibilityLevel": "JAVA_8",
   "server": [
     "GameModeMixin",

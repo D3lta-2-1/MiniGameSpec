@@ -1,4 +1,4 @@
-package io.github.aws404.observermode;
+package fr.delta.minigamespec;
 
 import com.chocohead.mm.api.ClassTinkerers;
 import net.fabricmc.loader.api.FabricLoader;
@@ -11,6 +11,6 @@ public class GameModeEnumAdder implements Runnable {
     @Override
     public void run() {
         String gameMode = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_1934");
-        ClassTinkerers.enumBuilder(gameMode, int.class, String.class).addEnum("OBSERVER", 4, "observer").build();
+        ClassTinkerers.enumBuilder(gameMode, int.class, String.class).addEnum("OBSERVER", 4, "observer").addEnum("ADVENTURE_SPEC", 5, "adventure_spec").build();
     }
 }

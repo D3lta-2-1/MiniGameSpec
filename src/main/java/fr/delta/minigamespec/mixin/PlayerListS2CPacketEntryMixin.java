@@ -1,6 +1,6 @@
-package io.github.aws404.observermode.mixin;
+package fr.delta.minigamespec.mixin;
 
-import io.github.aws404.observermode.ObserverModeMod;
+import fr.delta.minigamespec.MiniGameSpec;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,7 +15,11 @@ public class PlayerListS2CPacketEntryMixin {
 	 */
 	@ModifyVariable(method = "<init>(Ljava/util/UUID;Lcom/mojang/authlib/GameProfile;ZILnet/minecraft/world/GameMode;Lnet/minecraft/text/Text;Lnet/minecraft/network/encryption/PublicPlayerSession$Serialized;)V", at = @At(value = "HEAD"), argsOnly = true)
 	private static GameMode modifyGameMode(GameMode gameMode) {
-		return gameMode == ObserverModeMod.OBSERVER_MODE ? GameMode.ADVENTURE : gameMode;
+		if(gameMode == MiniGameSpec.OBSERVER_MODE)
+			return GameMode.ADVENTURE; //client hack to create the "observer mod"
+		if(gameMode == MiniGameSpec.ADVENTURE_SPEC_MOD)
+			return GameMode.ADVENTURE;
+		return gameMode;
 	}
 
 }

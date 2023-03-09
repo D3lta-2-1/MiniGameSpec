@@ -1,6 +1,6 @@
-package io.github.aws404.observermode.mixin;
+package fr.delta.minigamespec.mixin;
 
-import io.github.aws404.observermode.ObserverModeMod;
+import fr.delta.minigamespec.MiniGameSpec;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,9 +17,10 @@ public class GameStateChangeS2CPacketMixin {
     @ModifyVariable(method = "<init>(Lnet/minecraft/network/packet/s2c/play/GameStateChangeS2CPacket$Reason;F)V", at = @At("HEAD"), argsOnly = true)
     private static float init(float value, GameStateChangeS2CPacket.Reason reason) {
         if (reason == GameStateChangeS2CPacket.GAME_MODE_CHANGED) {
-            if (value == ObserverModeMod.OBSERVER_MODE.getId()) {
+            if (value == MiniGameSpec.OBSERVER_MODE.getId())
                 return GameMode.SPECTATOR.getId();
-            }
+            if (value == MiniGameSpec.ADVENTURE_SPEC_MOD.getId())
+                return GameMode.ADVENTURE.getId();
         }
         return value;
     }

@@ -1,8 +1,8 @@
-package io.github.aws404.observermode.mixin;
+package fr.delta.minigamespec.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Either;
-import io.github.aws404.observermode.ObserverModeMod;
+import fr.delta.minigamespec.MiniGameSpec;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,8 +35,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow @Final public ServerPlayerInteractionManager interactionManager;
     @Shadow public ServerPlayNetworkHandler networkHandler;
 
-    @Shadow public abstract void setCameraEntity(Entity entity);
-
     public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) { super(world, pos, yaw, profile); }
 
     /**
@@ -44,10 +42,24 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
      */
     @Inject(method = "changeGameMode", at = @At("HEAD"), cancellable = true)
     private void setGameModeHead(GameMode gameMode, CallbackInfoReturnable<Boolean> cir) {
-        if (gameMode == ObserverModeMod.OBSERVER_MODE) {
+        if (gameMode == MiniGameSpec.OBSERVER_MODE) {
             this.interactionManager.changeGameMode(gameMode);
 
             this.networkHandler.sendPacket(new GameStateChangeS2CPacket(GameStateChangeS2CPacket.GAME_MODE_CHANGED, (float)GameMode.SPECTATOR.getId()));
+            this.networkHandler.sendPacket(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, (ServerPlayerEntity) (Object) this));
+            this.networkHandler.sendPacket(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, (ServerPlayerEntity) (Object) this));
+
+            this.dropShoulderEntities();
+            this.stopRiding();
+            this.sendAbilitiesUpdate();
+            this.markEffectsDirty();
+
+            cir.setReturnValue(true);
+        }
+        if (gameMode == MiniGameSpec.ADVENTURE_SPEC_MOD) {
+            this.interactionManager.changeGameMode(gameMode);
+
+            this.networkHandler.sendPacket(new GameStateChangeS2CPacket(GameStateChangeS2CPacket.GAME_MODE_CHANGED, (float)GameMode.ADVENTURE.getId()));
             this.networkHandler.sendPacket(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, (ServerPlayerEntity) (Object) this));
             this.networkHandler.sendPacket(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, (ServerPlayerEntity) (Object) this));
 
@@ -73,7 +85,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
      */
     @Inject(method = "getPlayerListName", at = @At("HEAD"), cancellable = true)
     private void getPlayerListName(CallbackInfoReturnable<Text> cir) {
-        if (interactionManager.getGameMode() == ObserverModeMod.OBSERVER_MODE) {
+        if (interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE || interactionManager.getGameMode() == MiniGameSpec.ADVENTURE_SPEC_MOD) {
             cir.setReturnValue(((MutableText) getName()).formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
         }
     }
@@ -94,7 +106,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
      */
     @Redirect(method = "isSpectator", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerInteractionManager;getGameMode()Lnet/minecraft/world/GameMode;"))
     private GameMode isSpectatorGameModeRedirect(ServerPlayerInteractionManager manager) {
-        return manager.getGameMode() == ObserverModeMod.OBSERVER_MODE ? GameMode.SPECTATOR : manager.getGameMode();
+        var gameMode = manager.getGameMode();
+        return gameMode == MiniGameSpec.OBSERVER_MODE || gameMode == MiniGameSpec.ADVENTURE_SPEC_MOD ? GameMode.SPECTATOR : gameMode;
     }
 
     /**
@@ -102,10 +115,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
      */
     @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
     private void attack(Entity target, CallbackInfo ci) {
-        if (interactionManager.getGameMode() == ObserverModeMod.OBSERVER_MODE) {
-            if (target instanceof ServerPlayerEntity) {
-                this.setCameraEntity(target);
-            }
+        if (interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE) {
             ci.cancel();
         }
     }
@@ -115,7 +125,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
      */
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
     private void trySleep(BlockPos pos, CallbackInfoReturnable<Either<SleepFailureReason, Unit>> cir) {
-        if (interactionManager.getGameMode() == ObserverModeMod.OBSERVER_MODE) {
+        if (interactionManager.getGameMode() == MiniGameSpec.OBSERVER_MODE) {
             cir.setReturnValue(Either.left(SleepFailureReason.OTHER_PROBLEM));
         }
     }
